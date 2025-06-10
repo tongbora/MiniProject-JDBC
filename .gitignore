@@ -10,3 +10,4 @@
 src/main/resources/app.properties
 .gradle/
 .idea
+/user.txt
