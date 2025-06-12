@@ -4,32 +4,23 @@ import org.istad.model.entities.Product;
 import org.istad.model.service.impl.ProductServiceImpl;
 import org.istad.utils.DatabaseConnectionConfig;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ProductRepository implements Repository<Product, Integer> {
     @Override
     public List<Product> findAll() {
-        String sql = "SELECT * FROM products";
+        String sql = """
+                    SELECT * FROM products
+                    WHERE is_deleted = FALSE""";
         List<Product> products = new ArrayList<>();
         try(Connection con = DatabaseConnectionConfig.getConnection()){
             assert con != null;
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             while(rs.next()){
-                Product product = new Product();
-                product.setId(rs.getInt("id"));
-                product.setUuid(rs.getString("uuid"));
-                product.setProductName(rs.getString("product_name"));
-                product.setPrice(rs.getDouble("price"));
-                product.setQuantity(rs.getInt("quantity"));
-                product.setIsDeleted(rs.getBoolean("is_deleted"));
-                product.setCategory(rs.getString("category"));
-                products.add(product);
+                products.add(getProduct(rs));
             }
             System.out.println("Users found");
             return products;
@@ -41,22 +32,16 @@ public class ProductRepository implements Repository<Product, Integer> {
 
     @Override
     public Product findById(Integer id) {
-        String sql = "SELECT * FROM products WHERE id = ?";
+        String sql = """
+                    SELECT * FROM products 
+                    WHERE id = ? AND is_deleted = FALSE""";
         try(Connection con = DatabaseConnectionConfig.getConnection()){
             assert con != null;
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if(rs.next()){
-                Product product = new Product();
-                product.setId(rs.getInt("id"));
-                product.setUuid(rs.getString("uuid"));
-                product.setProductName(rs.getString("product_name"));
-                product.setPrice(rs.getDouble("price"));
-                product.setQuantity(rs.getInt("quantity"));
-                product.setIsDeleted(rs.getBoolean("is_deleted"));
-                product.setCategory(rs.getString("category"));
-                return product;
+                return getProduct(rs);
             }
         }catch (Exception e){
             System.out.println("Error during findById: " + e.getMessage());
@@ -91,22 +76,16 @@ public class ProductRepository implements Repository<Product, Integer> {
 
     // find product by uuid
     public Product findByUuid(String uuid) {
-        String sql = "SELECT * FROM products WHERE uuid = ?";
+        String sql = """
+                    SELECT * FROM products 
+                    WHERE uuid = ? AND is_deleted = FALSE""";
         try(Connection con = DatabaseConnectionConfig.getConnection()){
             assert con != null;
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setString(1, uuid);
             ResultSet rs = ps.executeQuery();
             if(rs.next()){
-                Product product = new Product();
-                product.setId(rs.getInt("id"));
-                product.setUuid(rs.getString("uuid"));
-                product.setProductName(rs.getString("product_name"));
-                product.setPrice(rs.getDouble("price"));
-                product.setQuantity(rs.getInt("quantity"));
-                product.setIsDeleted(rs.getBoolean("is_deleted"));
-                product.setCategory(rs.getString("category"));
-                return product;
+                return getProduct(rs);
             }
         }catch (Exception e){
             System.out.println("Error during findByUuid: " + e.getMessage());
@@ -116,7 +95,9 @@ public class ProductRepository implements Repository<Product, Integer> {
 
     // search product by name
     public List<Product> searchProductByName(String name){
-        String sql = "SELECT * FROM products WHERE product_name ILIKE ?";
+        String sql = """
+                    SELECT * FROM products 
+                    WHERE product_name ILIKE ? AND is_deleted = FALSE""";
         List<Product> products = new ArrayList<>();
         try(Connection con = DatabaseConnectionConfig.getConnection()){
             assert con != null;
@@ -124,21 +105,25 @@ public class ProductRepository implements Repository<Product, Integer> {
             ps.setString(1, "%" + name + "%");
             ResultSet rs = ps.executeQuery();
             if(rs.next()){
-                Product product = new Product();
-                product.setId(rs.getInt("id"));
-                product.setUuid(rs.getString("uuid"));
-                product.setProductName(rs.getString("product_name"));
-                product.setPrice(rs.getDouble("price"));
-                product.setQuantity(rs.getInt("quantity"));
-                product.setIsDeleted(rs.getBoolean("is_deleted"));
-                product.setCategory(rs.getString("category"));
-                products.add(product);
+                products.add(getProduct(rs));
             }
             return products;
         }catch (Exception e){
             System.out.println("Error during search product by name: " + e.getMessage());
         }
         return List.of();
+    }
+
+    public Product getProduct(ResultSet rs) throws SQLException {
+        Product product = new Product();
+        product.setId(rs.getInt("id"));
+        product.setUuid(rs.getString("uuid"));
+        product.setProductName(rs.getString("product_name"));
+        product.setPrice(rs.getDouble("price"));
+        product.setQuantity(rs.getInt("quantity"));
+        product.setIsDeleted(rs.getBoolean("is_deleted"));
+        product.setCategory(rs.getString("category"));
+        return product;
     }
 
 }

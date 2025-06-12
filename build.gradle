@@ -20,6 +20,8 @@ dependencies {
 
     // PostgreSQL JDBC driver
     implementation "org.postgresql:postgresql:42.7.5"
+//    for table ui
+    implementation "org.nocrala.tools.texttablefmt:text-table-formatter:1.2.4"
 }
 
 
