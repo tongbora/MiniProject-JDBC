@@ -4,13 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.sql.Date;
 
-@Data
 @AllArgsConstructor
+@Data
 @NoArgsConstructor
-public class ProductCart {
-    private Integer id;
-    private List<Integer> productId;
-    private Integer userId;
+public class Order {
+    Integer id;
+    Integer user_id;
+    Integer product_id;
+    Date order_date;
 }
