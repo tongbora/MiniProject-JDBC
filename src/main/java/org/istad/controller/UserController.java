@@ -19,8 +19,6 @@ public class UserController {
         return userService.getUserByEmail(email);
     }
 
-
-
     public boolean login (String email, String password){
         return userService.login(email, password);
     }
