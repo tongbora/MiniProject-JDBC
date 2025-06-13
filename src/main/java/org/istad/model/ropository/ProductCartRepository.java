@@ -18,9 +18,6 @@ public class ProductCartRepository {
             ps.setInt(1, userId);
             ps.setInt(2, productId);
             int rowAffected =  ps.executeUpdate();
-            if(rowAffected>0){
-                System.out.println("Add product to Cart successfully");
-            }
         }catch (Exception e){
             System.out.println("Error during add product to cart : " + e.getMessage());
         }
@@ -46,16 +43,14 @@ public class ProductCartRepository {
     }
 
     // delete product in cart
-    public void deleteProductFromCart(Integer productId) {
-        String sql = "DELETE FROM product_cart WHERE product_id = ?";
+    public void deleteProductFromCart(Integer userId, Integer productId) {
+        String sql = "DELETE FROM product_cart WHERE user_id = ? AND product_id = ?";
         try(Connection con = DatabaseConnectionConfig.getConnection()){
             assert con != null;
             PreparedStatement ps = con.prepareStatement(sql);
-            ps.setInt(1, productId);
+            ps.setInt(1, userId);
+            ps.setInt(2, productId);
             int rowAffected = ps.executeUpdate();
-            if(rowAffected>0){
-                System.out.println("Delete product from cart successfully");
-            }
         }catch (Exception e){
             System.out.println("Error during delete product from cart : " + e.getMessage());
         }

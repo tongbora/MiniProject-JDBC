@@ -13,8 +13,6 @@ public class Main {
     public static void main(String[] args) {
         OrderServiceImpl orderService = new OrderServiceImpl();
          UI ui = new UI();
-//         ui.ui();
-
-        orderService.makeOrder();
+         ui.ui();
     }
 }

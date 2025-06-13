@@ -14,4 +14,7 @@ public class ProductCartController {
     public void addProductToCart(String uuid){
         productCartService.addProductToCart(uuid);
     }
+    public void removeProductFromCart(String uuid){
+        productCartService.removeProductFromCart(uuid);
+    }
 }

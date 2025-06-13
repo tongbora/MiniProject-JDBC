@@ -20,6 +20,10 @@ dependencies {
 
     // PostgreSQL JDBC driver
     implementation "org.postgresql:postgresql:42.7.5"
+
+    // Table Format
+    implementation 'de.vandermeer:asciitable:0.3.2'
+
 }
 
 

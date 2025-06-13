@@ -5,12 +5,32 @@ import org.istad.utils.DatabaseConnectionConfig;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
 
 public class OrderRepository implements Repository<Order, Integer> {
 
     @Override
     public List<Order> findAll() {
+        return List.of();
+    }
+
+    public List<Integer> findAllProductIds(Integer userId) {
+        String sql = "SELECT product_id FROM orders WHERE user_id = ?";
+        List<Integer> productId = new ArrayList<>();
+        try(Connection con = DatabaseConnectionConfig.getConnection()){
+            assert con != null;
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                productId.add(rs.getInt("product_id"));
+            }
+            return productId;
+        }catch (Exception e){
+            System.out.println("Error during find all product in order: " + e.getMessage());
+        }
         return List.of();
     }
 
@@ -31,9 +51,6 @@ public class OrderRepository implements Repository<Order, Integer> {
             ps.setInt(2, order.getProduct_id());
             ps.setDate(3, order.getOrder_date());
             int rowAffected =  ps.executeUpdate();
-            if(rowAffected>0){
-                System.out.println("Order added successfully");
-            }
             return rowAffected > 0 ? order : null;
         }catch (Exception e){
             System.out.println("Error during creation of order: " + e.getMessage());

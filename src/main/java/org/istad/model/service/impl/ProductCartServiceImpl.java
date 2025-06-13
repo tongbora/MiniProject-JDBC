@@ -34,6 +34,23 @@ public class ProductCartServiceImpl implements ProductCartService {
             System.out.println("Error while adding product to Cart In Service: " + e.getMessage());
         }
     }
+
+    @Override
+    public void removeProductFromCart(String uuid) {
+        //check if product exist
+        Product product = productRepository.findByUuid(uuid);
+        // check if user exist or not
+        String[] emailAndPassword = userService.getEmailAndPasswordFromFile();
+        try{
+            if(!emailAndPassword[0].equals("null") && !emailAndPassword[1].equals("null") && product != null) {
+                User user = userRepository.getUserByEmail(emailAndPassword[0]);
+                productCartRepository.deleteProductFromCart(user.getId(), product.getId());
+            }
+        }catch(Exception e){
+            System.out.println("Error while deleting product to Cart In Service: " + e.getMessage());
+        }
+    }
+
     @Override
     public List<ProductResponDto> getAllProductInCart() {
         List<ProductResponDto> productResponDto = new ArrayList<>();
@@ -49,7 +66,7 @@ public class ProductCartServiceImpl implements ProductCartService {
                 return productResponDto;
             }
         }catch(Exception e){
-            System.out.println("Error while adding product to Cart In Service: " + e.getMessage());
+            System.out.println("Error while getting product from Product Cart: " + e.getMessage());
         }
         return List.of();
     }

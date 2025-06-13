@@ -31,7 +31,6 @@ public class ProductRepository implements Repository<Product, Integer> {
                 product.setCategory(rs.getString("category"));
                 products.add(product);
             }
-            System.out.println("Users found");
             return products;
         }catch (Exception e){
             System.out.println("Error during find all product: " + e.getMessage());
@@ -79,9 +78,6 @@ public class ProductRepository implements Repository<Product, Integer> {
             ps.setBoolean(5, product.getIsDeleted());
             ps.setString(6,product.getCategory());
             int rowAffected =  ps.executeUpdate();
-            if(rowAffected>0){
-                System.out.println("User created successfully");
-            }
             return rowAffected > 0 ? product : null;
         }catch (Exception e){
             System.out.println("Error during creation of product: " + e.getMessage());

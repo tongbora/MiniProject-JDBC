@@ -46,6 +46,10 @@ public class UserServiceImpl implements UserService {
     // Login
     public boolean login(String email, String password) {
         try{
+            String[] emailAndPassword = getEmailAndPasswordFromFile();
+            if(!emailAndPassword[0].equals("null") && !emailAndPassword[1].equals("null")){
+                return true;
+            }
             if(userRepository.getUserByEmail(email) != null && userRepository.getUserByPassword(password) != null){
                 // set email and password to file again
                 try(FileOutputStream file = new FileOutputStream("user.txt")) {
@@ -54,10 +58,10 @@ public class UserServiceImpl implements UserService {
                 }
                 return true;
             } else if (userRepository.getUserByEmail(email) == null) {
-                System.out.println("Email not found");
+                System.out.println("Email not found 🚫");
                 return false;
             }else if (userRepository.getUserByPassword(password) == null) {
-                System.out.println("Password not found");
+                System.out.println("Password not found 🚫");
                 return false;
             }
         }catch(Exception e){
@@ -65,7 +69,6 @@ public class UserServiceImpl implements UserService {
         }
         return false;
     }
-
 
     // Logout
     public boolean logout() {
@@ -90,6 +93,7 @@ public class UserServiceImpl implements UserService {
             }
         }
     }
+
     // get email and password from file
     public String[] getEmailAndPasswordFromFile() {
         try(BufferedReader reader = new BufferedReader(new FileReader("user.txt"))){
