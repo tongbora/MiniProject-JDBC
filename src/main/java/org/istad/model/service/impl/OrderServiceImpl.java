@@ -32,7 +32,7 @@ public class OrderServiceImpl {
                 List<Integer> pIDs = productCartRepository.getAllProductInCart(user.getId());
                 for (Integer pID: pIDs) {
                     orderRepo.save(new Order(1,user.getId(),pID,Date.valueOf(LocalDate.now())));
-                    productCartRepository.deleteProductFromCart(pID);
+                    productCartRepository.deleteProductFromCart(user.getId(),pID);
                 }
                 return order;
             }
